@@ -2,7 +2,7 @@
  * Create a list that holds all of your cards
  */
 var array = ["diamond", "paper-plane-o", "anchor", "bolt", "cube", "leaf", "bicycle", "bomb"];
-
+var cardClicked = 0;
 
 /*
  * Display the cards on the page
@@ -11,12 +11,13 @@ var array = ["diamond", "paper-plane-o", "anchor", "bolt", "cube", "leaf", "bicy
  *   - add each card's HTML to the page
  */
 var shuffledArray = shuffle(array.concat(array));
-var deck = document.getElementsByClassName("card");
+var deck = document.querySelectorAll(".card");
 
+//shuffle
 for(var i=0; i<shuffledArray.length; i++) {
     // deck[i].classList.remove("match");
     // deck[i].classList.add("open", "show");
-    deck[i].innerHTML = "<i class='fa fa-"+ shuffledArray[i]+"'></i>"
+    deck[i].innerHTML = "<i class='fa fa-"+ shuffledArray[i]+"'></i>";
 }
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -45,3 +46,49 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+
+ var openedCard = [];
+
+//  deck.forEach(card => {
+//     return card.addEventListener("click", openCard(card));
+//  });
+
+for (var index=0; index<deck.length; index++) {
+    deck[index].addEventListener("click", openCard);
+}
+
+function openCard() {
+    var classList = this.classList;
+    console.log(this);
+    classList.add("show", "open");
+    openedCard.push(this);
+
+    console.log(openedCard);
+    if(openedCard.length===2){
+        checkMatch();
+    }
+ }
+
+ function checkMatch() {
+    if(openedCard[0].innerHTML===openedCard[1].innerHTML){
+        console.log("match");
+        addMatch();
+    } else {
+        console.log("not match");
+        setTimeout(notMatch, 1000);
+    }
+
+ }
+
+ function addMatch(){
+    openedCard[0].className = "card match";
+    openedCard[1].className = "card match";
+    openedCard = [];
+ }
+
+ function notMatch(){
+    openedCard[0].className = "card";
+    openedCard[1].className = "card";
+    openedCard = [];
+ }
+
