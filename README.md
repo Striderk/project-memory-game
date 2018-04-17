@@ -1,5 +1,7 @@
 # Memory Game Project
 
+a memory game implemented using javascript.
+
 ## Table of Contents
 
 * [Instructions](#instructions)
