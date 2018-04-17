@@ -48,6 +48,7 @@ function shuffle(array) {
  */
 
  var openedCard = [];
+ var matchedCard = [];
 
 //  deck.forEach(card => {
 //     return card.addEventListener("click", openCard(card));
@@ -62,7 +63,9 @@ function openCard() {
     console.log(this);
     classList.add("show", "open");
     openedCard.push(this);
-
+    //disable clicked card
+    this.style.pointerEvents = "none";
+    console.log(this.style.pointerEvents);
     console.log(openedCard);
     if(openedCard.length===2){
         checkMatch();
@@ -74,21 +77,34 @@ function openCard() {
         console.log("match");
         addMatch();
     } else {
+        //restore point event
         console.log("not match");
-        setTimeout(notMatch, 1000);
+        setTimeout(notMatch, 300);
+        openedCard[0].style.pointerEvents = "visible";
+        openedCard[1].style.pointerEvents = "visible";
     }
-
  }
 
- function addMatch(){
+ function addMatch() {
     openedCard[0].className = "card match";
     openedCard[1].className = "card match";
+    matchedCard = matchedCard.concat(openedCard);
+    if(matchedCard.length===16) {
+        showWinPanel();
+    }
     openedCard = [];
  }
 
- function notMatch(){
+ function notMatch() {
     openedCard[0].className = "card";
     openedCard[1].className = "card";
     openedCard = [];
  }
 
+ function showWinPanel() {
+    document.querySelector(".win-panel").style.display = "block";
+ }
+
+ function restart() {
+    document.querySelector(".win-panel").style.display = "none";
+ }
