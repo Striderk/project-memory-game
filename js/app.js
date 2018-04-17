@@ -2,7 +2,11 @@
  * Create a list that holds all of your cards
  */
 var array = ["diamond", "paper-plane-o", "anchor", "bolt", "cube", "leaf", "bicycle", "bomb"];
-var cardClicked = 0;
+var moves = 0;
+var timerCount = 0;
+var openedCard = [];
+var matchedCard = [];
+var gameStarted = false;
 
 /*
  * Display the cards on the page
@@ -14,15 +18,16 @@ var shuffledArray = shuffle(array.concat(array));
 var deck = document.querySelectorAll(".card");
 
 //shuffle
-for(var i=0; i<shuffledArray.length; i++) {
+for (var i = 0; i < shuffledArray.length; i++) {
     // deck[i].classList.remove("match");
     // deck[i].classList.add("open", "show");
-    deck[i].innerHTML = "<i class='fa fa-"+ shuffledArray[i]+"'></i>";
+    deck[i].innerHTML = "<i class='fa fa-" + shuffledArray[i] + "'></i>";
 }
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+    var currentIndex = array.length,
+        temporaryValue, randomIndex;
 
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
@@ -47,33 +52,34 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
- var openedCard = [];
- var matchedCard = [];
-
 //  deck.forEach(card => {
 //     return card.addEventListener("click", openCard(card));
 //  });
 
-for (var index=0; index<deck.length; index++) {
+for (var index = 0; index < deck.length; index++) {
     deck[index].addEventListener("click", openCard);
 }
 
 function openCard() {
     var classList = this.classList;
-    console.log(this);
+
     classList.add("show", "open");
     openedCard.push(this);
     //disable clicked card
     this.style.pointerEvents = "none";
-    console.log(this.style.pointerEvents);
-    console.log(openedCard);
-    if(openedCard.length===2){
+    if (!gameStarted) {
+        setTimer();
+        gameStarted = true;
+    }
+    if (openedCard.length === 2) {
+        moves++;
+        setMoves();
         checkMatch();
     }
- }
+}
 
- function checkMatch() {
-    if(openedCard[0].innerHTML===openedCard[1].innerHTML){
+function checkMatch() {
+    if (openedCard[0].innerHTML === openedCard[1].innerHTML) {
         console.log("match");
         addMatch();
     } else {
@@ -83,28 +89,63 @@ function openCard() {
         openedCard[0].style.pointerEvents = "visible";
         openedCard[1].style.pointerEvents = "visible";
     }
- }
+}
 
- function addMatch() {
+function addMatch() {
     openedCard[0].className = "card match";
     openedCard[1].className = "card match";
     matchedCard = matchedCard.concat(openedCard);
-    if(matchedCard.length===16) {
+    if (matchedCard.length === 16) {
         showWinPanel();
     }
     openedCard = [];
- }
+}
 
- function notMatch() {
+function notMatch() {
     openedCard[0].className = "card";
     openedCard[1].className = "card";
     openedCard = [];
- }
+}
 
- function showWinPanel() {
+function showWinPanel() {
     document.querySelector(".win-panel").style.display = "block";
- }
+    constructStartAndMoves();
+}
 
- function restart() {
+function setMoves() {
+    document.querySelector(".moves").innerHTML = moves;
+}
+
+function setTimer() {
+    var startTime = new Date().getTime();
+    var myVar = setInterval(function () {
+        var now = new Date().getTime();
+        var timeUsed = now - startTime;
+        var min = Math.floor((timeUsed % (1000 * 60 * 60)) / (1000 * 60));
+        var sec = Math.floor((timeUsed % (1000 * 60)) / 1000);
+
+        if (sec < 10) {
+            sec = "0" + sec;
+        }
+        if (min < 10) {
+            min = "0" + min;
+        }
+        var showTime = min + ":" + sec;
+        document.querySelector(".timer").innerHTML = showTime;
+    }, 1000);
+}
+
+function getTimeUsed() {
+    return document.querySelector(".timer").innerHTML;
+}
+
+function constructStartAndMoves() {
+    var para = document.createElement("p");
+    var node = document.createTextNode("With " + moves + " moves" + " starts" + " and time used " + getTimeUsed());
+    para.appendChild(node);
+    document.querySelector(".panel-content").appendChild(para);
+}
+
+function restart() {
     document.querySelector(".win-panel").style.display = "none";
- }
+}

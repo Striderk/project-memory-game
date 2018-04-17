@@ -138,3 +138,8 @@ h1 {
     background: #02ccba;
     border: none;
 }
+
+.move-label{
+    margin-left: 15px;
+    margin-right: 15px;
+}
