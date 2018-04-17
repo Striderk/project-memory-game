@@ -2,11 +2,13 @@
  * Create a list that holds all of your cards
  */
 var array = ["diamond", "paper-plane-o", "anchor", "bolt", "cube", "leaf", "bicycle", "bomb"];
-var moves = 0;
-var timerCount = 0;
-var openedCard = [];
-var matchedCard = [];
-var gameStarted = false;
+var moves,
+    timerCount,
+    openedCard,
+    matchedCard,
+    gameStarted,
+    deck,
+    myTime;
 
 /*
  * Display the cards on the page
@@ -14,14 +16,39 @@ var gameStarted = false;
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
-var shuffledArray = shuffle(array.concat(array));
-var deck = document.querySelectorAll(".card");
 
-//shuffle
-for (var i = 0; i < shuffledArray.length; i++) {
-    // deck[i].classList.remove("match");
-    // deck[i].classList.add("open", "show");
-    deck[i].innerHTML = "<i class='fa fa-" + shuffledArray[i] + "'></i>";
+function initGame() {
+    moves = 0;
+    timerCount = 0;
+    openedCard = [];
+    matchedCard = [];
+    gameStarted = false;
+    clearInterval(myTime);
+    resetScorePanel();
+    shuffleCards();
+    addEventListener();
+}
+
+function shuffleCards() {
+    var shuffledArray = shuffle(array.concat(array));
+    deck = document.querySelectorAll(".card");
+
+    //shuffle
+    for (var i = 0; i < shuffledArray.length; i++) {
+        // deck[i].classList.remove("match");
+        // deck[i].classList.add("open", "show");
+        deck[i].innerHTML = "<i class='fa fa-" + shuffledArray[i] + "'></i>";
+        deck[i].style.pointerEvents = "visible";
+        flipOverCard(deck[i]);
+    }
+}
+
+function flipOverCard(card) {
+    card.className = "card";
+}
+
+function flipMatchCard(card) {
+    card.className = "card match";
 }
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -56,8 +83,11 @@ function shuffle(array) {
 //     return card.addEventListener("click", openCard(card));
 //  });
 
-for (var index = 0; index < deck.length; index++) {
-    deck[index].addEventListener("click", openCard);
+function addEventListener() {
+    for (var index = 0; index < deck.length; index++) {
+        deck[index].addEventListener("click", openCard);
+    }
+    document.querySelector(".restart").addEventListener("click", restart);
 }
 
 function openCard() {
@@ -83,27 +113,28 @@ function checkMatch() {
         console.log("match");
         addMatch();
     } else {
-        //restore point event
         console.log("not match");
         setTimeout(notMatch, 300);
+        //restore point event
         openedCard[0].style.pointerEvents = "visible";
         openedCard[1].style.pointerEvents = "visible";
     }
 }
 
 function addMatch() {
-    openedCard[0].className = "card match";
-    openedCard[1].className = "card match";
+    flipMatchCard(openedCard[0]);
+    flipMatchCard(openedCard[1]);
     matchedCard = matchedCard.concat(openedCard);
     if (matchedCard.length === 16) {
+        clearInterval(myTime);
         showWinPanel();
     }
     openedCard = [];
 }
 
 function notMatch() {
-    openedCard[0].className = "card";
-    openedCard[1].className = "card";
+    flipOverCard(openedCard[0]);
+    flipOverCard(openedCard[1]);
     openedCard = [];
 }
 
@@ -118,7 +149,7 @@ function setMoves() {
 
 function setTimer() {
     var startTime = new Date().getTime();
-    var myVar = setInterval(function () {
+    myTime = setInterval(function () {
         var now = new Date().getTime();
         var timeUsed = now - startTime;
         var min = Math.floor((timeUsed % (1000 * 60 * 60)) / (1000 * 60));
@@ -158,11 +189,23 @@ function getStar() {
 
 function constructStartAndMoves() {
     var para = document.createElement("p");
-    var node = document.createTextNode("With " + moves + " moves, " + getStar() +" starts" + " and time used " + getTimeUsed());
+    var node = document.createTextNode("With " + moves + " moves, " + getStar() + " starts" + " and time used " + getTimeUsed());
     para.appendChild(node);
     document.querySelector(".panel-content").appendChild(para);
 }
 
 function restart() {
     document.querySelector(".win-panel").style.display = "none";
+    initGame();
 }
+
+function resetScorePanel() {
+    document.querySelector(".moves").innerHTML = 0;
+    document.querySelector(".timer").innerHTML = "00:00";
+    document.querySelector(".stars").innerHTML =
+        "<li><i class='fa fa-star'></i></li><li><i class='fa fa-star'></i></li><li><i class='fa fa-star'></i></li>";
+}
+
+(function () {
+    initGame();
+})();
