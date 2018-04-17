@@ -123,7 +123,7 @@ function setTimer() {
         var timeUsed = now - startTime;
         var min = Math.floor((timeUsed % (1000 * 60 * 60)) / (1000 * 60));
         var sec = Math.floor((timeUsed % (1000 * 60)) / 1000);
-
+        setStar(min, sec);
         if (sec < 10) {
             sec = "0" + sec;
         }
@@ -135,13 +135,30 @@ function setTimer() {
     }, 1000);
 }
 
+function setStar(min, sec) {
+    var starList = document.querySelector(".stars").getElementsByTagName("li");
+    var timeConsumed = min * 60 + sec;
+    var removeStarScore = timeConsumed + moves * 5;
+    if (starList.length > 1) {
+        if (removeStarScore > 60 && starList.length > 2) {
+            starList[2].remove();
+        } else if (removeStarScore > 120) {
+            starList[1].remove();
+        }
+    }
+}
+
 function getTimeUsed() {
     return document.querySelector(".timer").innerHTML;
 }
 
+function getStar() {
+    return document.querySelector(".stars").getElementsByTagName("li").length;
+}
+
 function constructStartAndMoves() {
     var para = document.createElement("p");
-    var node = document.createTextNode("With " + moves + " moves" + " starts" + " and time used " + getTimeUsed());
+    var node = document.createTextNode("With " + moves + " moves, " + getStar() +" starts" + " and time used " + getTimeUsed());
     para.appendChild(node);
     document.querySelector(".panel-content").appendChild(para);
 }
