@@ -2,18 +2,14 @@
 
 a memory game implemented using javascript.
 
-## Table of Contents
+## Game description
++ Game stars when any one card is clicked.
++ Moves counter records how many sets (two cards) user clicked.
++ Click on any two cards to see if they are matched
+    - If match, the cards will remain open and changed to green color.
+    - If not match, the cards will flip over.
++ When all the cards are matched, the popup panel will be shown and summerize the moves, stars user get, as well as the time consumed.
 
-* [Instructions](#instructions)
-* [Contributing](#contributing)
-
-## Instructions
-
-The starter project has some HTML and CSS styling to display a static version of the Memory Game project. You'll need to convert this project from a static project to an interactive one. This will require modifying the HTML and CSS files, but primarily the JavaScript file.
-
-To get started, open `js/app.js` and start building out the app's functionality
-
-For specific, detailed instructions, look at the project instructions in the [Udacity Classroom](https://classroom.udacity.com/me).
 
 ## Contributing
 

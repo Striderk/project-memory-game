@@ -98,6 +98,7 @@ function addMatch() {
     flipMatchCard(openedCard[1]);
     matchedCard = matchedCard.concat(openedCard);
     if (matchedCard.length === 16) {
+        //stop the timer
         clearInterval(myTime);
         showWinPanel();
     }
@@ -127,6 +128,7 @@ function setTimer() {
         var min = Math.floor((timeUsed % (1000 * 60 * 60)) / (1000 * 60));
         var sec = Math.floor((timeUsed % (1000 * 60)) / 1000);
         setStar(min, sec);
+        //if sec, min less than 10, add 0 in front make shown result 2 digits
         if (sec < 10) {
             sec = "0" + sec;
         }
@@ -141,6 +143,7 @@ function setTimer() {
 function setStar(min, sec) {
     var starList = document.querySelector(".stars").getElementsByTagName("li");
     var timeConsumed = min * 60 + sec;
+    //set score as time consume plus the 5 * moves taken
     var removeStarScore = timeConsumed + moves * 5;
     if (starList.length > 1) {
         if (removeStarScore > 60 && starList.length > 2) {
@@ -159,8 +162,9 @@ function getStar() {
     return document.querySelector(".stars").getElementsByTagName("li").length;
 }
 
-function constructStartAndMoves() {
+function constructStarsAndMoves() {
     var para = document.querySelector(".win-detail");
+    //add the stars moves and time consumed in winning panel.
     para.innerHTML = "With " + moves + " moves, " + getStar() + " starts" + " and time used " + getTimeUsed();
 }
 
